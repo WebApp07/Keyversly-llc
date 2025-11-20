@@ -2,6 +2,10 @@ import React from "react";
 import Container from "./Container";
 import Logo from "./Logo";
 import HeaderMenu from "./HeaderMenu";
+import SearchBar from "./SearchBar";
+import CartIcon from "./CartIcon";
+import FavoriteButton from "./FavoriteButton";
+import SignIn from "./Sign";
 
 function Header() {
   return (
@@ -11,8 +15,14 @@ function Header() {
         <Logo />
         {/* NavButton */}
         <HeaderMenu />
-        <div>Others</div>
         {/* NavAdmin */}
+
+        <div className="w-auto md:1/3 flex items-center justify-end gap-5">
+          <SearchBar />
+          <CartIcon />
+          <FavoriteButton />
+          <SignIn />
+        </div>
       </Container>
     </header>
   );
