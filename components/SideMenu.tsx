@@ -5,6 +5,7 @@ import { headerData } from "@/constants/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SocialMedia from "./SocialMedia";
+import { useOutsideClick } from "@/hooks";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface SidebarProps {
 const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
   // Get the current URL path
   const pathname = usePathname();
+  const sidebarRef = useOutsideClick<HTMLDivElement>(onClose);
   return (
     // This is the full background overlay (dark transparent layer)
     <div
@@ -23,7 +25,10 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
       } hoverEffect`}
     >
       {/* This is the actual sliding side menu panel */}
-      <div className="min-w-72 max-w-96 bg-black h-screen p-10 border-r border-r-shop_light_green flex flex-col gap-6">
+      <div
+        ref={sidebarRef}
+        className="min-w-72 max-w-96 bg-black h-screen p-10 border-r border-r-shop_light_green flex flex-col gap-6"
+      >
         {/* Top row: Logo on left, Close button on right */}
         <div className="flex items-center justify-between">
           <Logo className="text-white" spanDesign="group-hover:text-white" />
