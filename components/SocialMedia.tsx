@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import { Facebook, Github, Linkedin, Slack, Youtube } from "lucide-react";
 import {
   Tooltip,
@@ -55,7 +54,7 @@ const SocialMedia = ({ className, iconClassName, tooltipClassName }: Props) => {
       <div className={cn("flex items-center gap-3.5", className)}>
         {/* Loop through each social link */}
         {socialLink?.map((item) => (
-          <Tooltip>
+          <Tooltip key={item?.title}>
             {/* Tooltip trigger wraps the clickable icon */}
             <TooltipTrigger asChild>
               <Link
@@ -76,7 +75,6 @@ const SocialMedia = ({ className, iconClassName, tooltipClassName }: Props) => {
               </Link>
             </TooltipTrigger>
             {/* Tooltip content (the small pop-up text) */}
-
             <TooltipContent
               className={cn(
                 "bg-white text-darkColor font-semibold border-shop_light_green",
