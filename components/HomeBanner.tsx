@@ -9,7 +9,7 @@ const HomeBanner = () => {
       <div className="space-y-5">
         <Title>
           Save Big on Your Favorite Software <br />
-          Office Adobe Windows & more — up to 50% off!
+          Office Adobe Windows...
         </Title>
         <Link
           href={"/shop"}
