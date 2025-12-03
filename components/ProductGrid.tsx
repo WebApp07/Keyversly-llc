@@ -82,7 +82,12 @@ const ProductGrid = () => {
           <>
             {products?.map((product) => (
               <AnimatePresence key={product?._id}>
-                <motion.div>
+                <motion.div
+                  layout
+                  initial={{ opacity: 0.2 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
                   <ProductCard product={product} />
                 </motion.div>
               </AnimatePresence>
