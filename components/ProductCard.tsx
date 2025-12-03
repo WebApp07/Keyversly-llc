@@ -1,8 +1,10 @@
 import { Product } from "@/sanity.types";
 import { urlFor } from "@/sanity/lib/image";
-import { Flame } from "lucide-react";
+import { Flame, StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import AddToWishListButton from "./AddToWishListButton";
+import { Title } from "./ui/text";
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (
@@ -15,8 +17,20 @@ const ProductCard = ({ product }: { product: Product }) => {
             loading="lazy"
             width={700}
             height={700}
+            //priority
+            className={`w-full h-64 object-contain overflow-hidden transition-transform bg-shop_light_bg duration-500 
+              ${product?.stock !== 0 ? "group-hover:scale-105" : "opacity-50"}`}
           />
         )}
+
+        <AddToWishListButton product={product} />
+
+        {product?.status === "sale" && (
+          <p className="absolute top-2 left-2 z-10 text-xs border border-darkColor/50 px-2 rounded-full group-hover:border-b-shop_light_green group-hover:text-shop_light_green hoverEffect">
+            Sale!
+          </p>
+        )}
+
         {product?.status === "sale" && (
           <p className="absolute top-2 left-2 z-10 text-xs border border-darkColor/50 px-2 rounded-full group-hover:border-lightGreen hover:text-shop_dark_green hoverEffect">
             Sale!
@@ -42,7 +56,44 @@ const ProductCard = ({ product }: { product: Product }) => {
           </Link>
         )}
       </div>
-      <div className="p-3">Product details</div>
+      <div className="p-3 flex flex-col gap-2">
+        {product?.categories && (
+          <p className="uppercase line-clamp-1 text-xs text-shop_light_text">
+            {product?.categories?.map((cat) => cat).join(", ")}
+          </p>
+        )}
+        <Title className="text-sm line-clamp-3">{product.name}</Title>
+
+        <div className="flex items-center gap-0.5">
+          <div className="flex items-center">
+            {[...Array(5)].map((_, index) => (
+              <StarIcon
+                size={13}
+                key={index}
+                className={
+                  index < 4 ? "text-shop_light_green" : " text-lightText"
+                }
+                fill={index < 4 ? "#93D991" : "#ababab"}
+              />
+            ))}
+          </div>
+          <p className="text-shop_light_text text-xs tracking-wide">
+            5 Reviews
+          </p>
+        </div>
+        <div className="flex-items-center gap-2.5">
+          <p className="font-medium">In Stock</p>
+          <p
+            className={`${
+              product?.stock === 0
+                ? "text-red-600"
+                : "text-shop_light_green/80 font-semibold"
+            } `}
+          >
+            {(product?.stock as number) > 0 ? product?.stock : "unavailable"}
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
