@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typegen": "npx sanity@latest schema extract && npx sanity@latest typegen generate"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.35.4",
@@ -20,6 +21,7 @@
     "clsx": "^2.1.1",
     "init": "^0.1.2",
     "lucide-react": "^0.554.0",
+    "motion": "^12.23.25",
     "next": "16.0.3",
     "next-sanity": "^9.12.3",
     "nextjs@6.12.6": "link:clerk/nextjs@6.12.6",

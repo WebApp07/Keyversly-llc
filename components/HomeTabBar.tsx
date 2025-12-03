@@ -11,14 +11,14 @@ interface Props {
 }
 
 // It receives selectedTab + onTabSelected from the parent component.
-const HomeTabBar = ({ selectedTab, onTabSelected }: Props) => {
+const HomeTabBar = ({ selectedTab, onTabSelect }: Props) => {
   console.log(selectedTab);
   return (
     <div className="flex items-center justify-between flex-wrap gap-3">
       <div className="flex items-center gap-1.5 text-sm font-semibold">
         {productType.map((item) => (
           <button
-            onClick={() => onTabSelected(item?.title)}
+            onClick={() => onTabSelect(item?.title)}
             key={item?.title}
             // Dynamic styling: if this tab is selected, apply one style.
             // Otherwise, apply the default style.
