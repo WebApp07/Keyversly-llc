@@ -1,4 +1,5 @@
 import { sanityFetch } from "../lib/live";
+import { BRANDS_QUERY } from "./query";
 
 const getCategories = async (quantity?: number) => {
   try {
@@ -32,4 +33,26 @@ const getCategories = async (quantity?: number) => {
   }
 };
 
-export { getCategories };
+// Function to fetch all brand documents from Sanity
+const getAllBrands = async () => {
+  try {
+    // Call your custom Sanity fetch function.
+    // It sends the BRANDS_QUERY to Sanity and returns an object like: { data: [...] }
+    const { data } = await sanityFetch({
+      query: BRANDS_QUERY, // GROQ query that fetches all brands sorted by name
+    });
+
+    // Return the data if it exists, otherwise return an empty array to avoid undefined errors.
+    return data ?? [];
+  } catch (error) {
+    // If anything goes wrong (network error, invalid query, etc.)
+    // log the error so you can debug it.
+    console.log("Error fetching all brands:", error);
+
+    // Optional: return an empty array when an error happens,
+    // so the UI doesn't break.
+    return [];
+  }
+};
+
+export { getCategories, getAllBrands };
