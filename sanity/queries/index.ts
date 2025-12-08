@@ -1,5 +1,5 @@
 import { sanityFetch } from "../lib/live";
-import { BRANDS_QUERY } from "./query";
+import { BRANDS_QUERY, LATEST_BLOG_QUERY } from "./query";
 
 const getCategories = async (quantity?: number) => {
   try {
@@ -55,4 +55,26 @@ const getAllBrands = async () => {
   }
 };
 
-export { getCategories, getAllBrands };
+// Function to fetch all Latest Blogs from Sanity
+const getLatestBlogs = async () => {
+  try {
+    // Call your custom Sanity fetch function.
+    // It sends the BRANDS_QUERY to Sanity and returns an object like: { data: [...] }
+    const { data } = await sanityFetch({
+      query: LATEST_BLOG_QUERY, // GROQ query that fetches all Blogs
+    });
+
+    // Return the data if it exists, otherwise return an empty array to avoid undefined errors.
+    return data ?? [];
+  } catch (error) {
+    // If anything goes wrong (network error, invalid query, etc.)
+    // log the error so you can debug it.
+    console.log("Error fetching latest Blogs:", error);
+
+    // Optional: return an empty array when an error happens,
+    // so the UI doesn't break.
+    return [];
+  }
+};
+
+export { getCategories, getAllBrands, getLatestBlogs };
