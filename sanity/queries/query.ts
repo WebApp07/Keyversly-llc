@@ -19,4 +19,11 @@ const LATEST_BLOG_QUERY = defineQuery(
     }`
 );
 
-export { BRANDS_QUERY, LATEST_BLOG_QUERY };
+const DEAL_PRODUCTS = defineQuery(
+  // Fetch all hot products, sort them by name, and include category titles
+  `*[_type == 'product' && status == 'hot'] | order(name asc){
+    ...,"categories": categories[]->title
+  }`
+);
+
+export { BRANDS_QUERY, LATEST_BLOG_QUERY, DEAL_PRODUCTS };
