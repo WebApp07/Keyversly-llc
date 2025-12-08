@@ -4,4 +4,24 @@ import { defineQuery } from "next-sanity";
 // and sorts them alphabetically by the "name" field.
 const BRANDS_QUERY = defineQuery(`*[_type=="brand"] | order(name asc)`);
 
-export { BRANDS_QUERY };
+//Find all documents where the type is "blog" and the field "isLatest" is true
+//Sort these results alphabetically by the "name" field (A → Z)
+//Include ALL fields from the blog document (title, slug, image, etc.)
+//For each category reference inside "blogcategories"
+//fetch the "title" of that category
+
+const LATEST_BLOG_QUERY = defineQuery(
+  `
+  *[_type == 'blog' && isLatest == true]   
+  | order(name asc)                        
+
+  {
+    ...,                                  
+
+    blogcategories[]-> {                  
+      title                               
+  }
+  `
+);
+
+export { BRANDS_QUERY, LATEST_BLOG_QUERY };

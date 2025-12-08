@@ -36,7 +36,7 @@ const ShopByBrands = async () => {
   const brands = await getAllBrands();
 
   return (
-    <div className="mb-10 lg:pb-20 bg-shop_light_bg p-5 lg:p-7 rounded-md">
+    <div className="mb-10 lg:mb-20 bg-shop_light_bg p-5 lg:p-7 rounded-md">
       {/* Header section with title and "View All" link */}
       <div className="flex items-center gap-5 justify-between mb-10">
         <Title>Shop By Brands</Title>
