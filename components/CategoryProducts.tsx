@@ -14,30 +14,30 @@ interface Props {
 }
 
 const CategoryProducts = ({ categories, slug }: Props) => {
-  const [currentSlug, setCurrentSlug] = useState(slug);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [currentSlug, setCurrentSlug] = useState(slug); // variable slug
+  const [products, setProducts] = useState([]); // variable products
+  const [loading, setLoading] = useState(false); // variable laoading
+  const router = useRouter(); // handle the router
   const handleCategoryChange = (newSlug: string) => {
     if (newSlug === currentSlug) return; // Prevent unnecessary updates
-    setCurrentSlug(newSlug);
+    setCurrentSlug(newSlug); // update variable slug
     router.push(`/category/${newSlug}`, { scroll: false }); // Update URL without
   };
 
   const fetchProducts = async (categorySlug: string) => {
-    setLoading(true);
+    setLoading(true); // loading now is true
     try {
       const query = `
         *[_type == 'product' && references(*[_type == "category" && slug.current == $categorySlug]._id)] | order(name asc){
-        ...,"categories": categories[]->title}
-      `;
-      const data = await client.fetch(query, { categorySlug });
-      setProducts(data);
+        ...,"categories": categories[]->title} 
+      `; // query product from sanity
+      const data = await client.fetch(query, { categorySlug }); // fetch the products from sanity
+      setProducts(data); // products they will take data
     } catch (error) {
-      console.error("Error fetching products:", error);
-      setProducts([]);
+      console.error("Error fetching products:", error); // We catch error
+      setProducts([]); // empty products and []
     } finally {
-      setLoading(false);
+      setLoading(false); // stop loading
     }
   };
   useEffect(() => {
