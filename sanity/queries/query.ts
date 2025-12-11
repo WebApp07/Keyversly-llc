@@ -26,4 +26,14 @@ const DEAL_PRODUCTS = defineQuery(
   }`
 );
 
-export { BRANDS_QUERY, LATEST_BLOG_QUERY, DEAL_PRODUCTS };
+// Show me all products But ONLY the product that has a slug matching the slug I asked for it
+const PRODUCT_BY_SLUG_QUERY = defineQuery(
+  `*[_type == "product" && slug.current == $slug] | order(name asc) [0]`
+);
+
+export {
+  BRANDS_QUERY,
+  LATEST_BLOG_QUERY,
+  DEAL_PRODUCTS,
+  PRODUCT_BY_SLUG_QUERY,
+};

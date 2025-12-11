@@ -1,5 +1,10 @@
 import { sanityFetch } from "../lib/live";
-import { BRANDS_QUERY, DEAL_PRODUCTS, LATEST_BLOG_QUERY } from "./query";
+import {
+  BRANDS_QUERY,
+  DEAL_PRODUCTS,
+  LATEST_BLOG_QUERY,
+  PRODUCT_BY_SLUG_QUERY,
+} from "./query";
 
 const getCategories = async (quantity?: number) => {
   try {
@@ -89,4 +94,30 @@ const getDealProducts = async () => {
   }
 };
 
-export { getCategories, getAllBrands, getLatestBlogs, getDealProducts };
+// Function to fetch a single product from Sanity by its slug
+const getProductBySlug = async (slug: string) => {
+  try {
+    // Call the sanityFetch function with the query and dynamic slug
+    // sanityFetch returns a Promise, so we use await to get the actual data
+    const product = await sanityFetch({
+      query: PRODUCT_BY_SLUG_QUERY, // The GROQ query defined to fetch product by slug
+      params: {
+        slug, // Pass the slug to the query ($slug)
+      },
+    });
+
+    // Return the product data if it exists, otherwise return null
+    return product?.data || null;
+  } catch (error) {
+    // Catch any errors during fetching and log them
+    console.error("Error fetching data by ID", error);
+  }
+};
+
+export {
+  getCategories,
+  getAllBrands,
+  getLatestBlogs,
+  getDealProducts,
+  getProductBySlug,
+};
