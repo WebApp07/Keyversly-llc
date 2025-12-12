@@ -1,4 +1,7 @@
-import React from "react";
+import notFound from "@/app/not-found";
+import Container from "@/components/Container";
+import ImageView from "@/components/ImageView";
+import { getProductBySlug } from "@/sanity/queries";
 
 // This component is async because we need to WAIT for data
 const SingleProductPage = async ({
@@ -8,8 +11,18 @@ const SingleProductPage = async ({
 }) => {
   // params.slug comes from the URL
   const { slug } = await params;
-
-  return <div>SingleProductPage</div>;
+  const product = await getProductBySlug(slug);
+  if (!product) {
+    return notFound();
+  }
+  return (
+    <Container className="flex flex-col md:flex-row gap-10 py-10 pb-10">
+      {product?.images && (
+        <ImageView images={product?.images} isStock={product?.stock} />
+      )}
+      <div className="w-full md:w-1/2 flex flex-col gap-5">Deals</div>
+    </Container>
+  );
 };
 
 export default SingleProductPage;
