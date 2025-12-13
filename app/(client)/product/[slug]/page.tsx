@@ -1,16 +1,23 @@
-import notFound from "@/app/not-found";
+import AddToCartButton from "@/components/AddToCartButton";
 import Container from "@/components/Container";
+import FavoriteButton from "@/components/FavoriteButton";
 import ImageView from "@/components/ImageView";
+import PriceView from "@/components/PriceView";
+import ProductCharacteristics from "@/components/ProductCharacteristics";
 import { getProductBySlug } from "@/sanity/queries";
-import { StarIcon } from "lucide-react";
+import { CornerDownLeft, StarIcon, Truck } from "lucide-react";
+import { notFound } from "next/navigation";
+import React from "react";
+import { FaRegQuestionCircle } from "react-icons/fa";
+import { FiShare2 } from "react-icons/fi";
+import { RxBorderSplit } from "react-icons/rx";
+import { TbTruckDelivery } from "react-icons/tb";
 
-// This component is async because we need to WAIT for data
 const SingleProductPage = async ({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) => {
-  // params.slug comes from the URL
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) {
@@ -37,6 +44,70 @@ const SingleProductPage = async ({
               />
             ))}
             <p className="font-semibold">{`(120)`}</p>
+          </div>
+        </div>
+        <div className="space-y-2 border-t border-b border-gray-200 py-5">
+          <PriceView
+            price={product?.price}
+            discount={product?.discount}
+            className="text-lg font-bold"
+          />
+          <p
+            className={`px-4 py-1.5 text-sm text-center inline-block font-semibold rounded-lg ${
+              product?.stock === 0
+                ? "bg-red-100 text-red-600"
+                : "text-green-600 bg-green-100"
+            }`}
+          >
+            {(product?.stock as number) > 0 ? "In Stock" : "Out of Stock"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2.5 lg:gap-3">
+          <AddToCartButton product={product} />
+          <FavoriteButton showProduct={true} product={product} />
+        </div>
+        <ProductCharacteristics product={product} />
+        <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-b-gray-200 py-5 -mt-2">
+          <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
+            <RxBorderSplit className="text-lg" />
+            <p>Compare color</p>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
+            <FaRegQuestionCircle className="text-lg" />
+            <p>Ask a question</p>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
+            <TbTruckDelivery className="text-lg" />
+            <p>Delivery & Return</p>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
+            <FiShare2 className="text-lg" />
+            <p>Share</p>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="border border-lightColor/25 border-b-0 p-3 flex items-center gap-2.5">
+            <Truck size={30} className="text-shop_orange" />
+            <div>
+              <p className="text-base font-semibold text-black">
+                Free Delivery
+              </p>
+              <p className="text-sm text-gray-500 underline underline-offset-2">
+                Enter your Postal code for Delivey Availability.
+              </p>
+            </div>
+          </div>
+          <div className="border border-lightColor/25 p-3 flex items-center gap-2.5">
+            <CornerDownLeft size={30} className="text-shop_orange" />
+            <div>
+              <p className="text-base font-semibold text-black">
+                Return Delivery
+              </p>
+              <p className="text-sm text-gray-500 ">
+                Free 30days Delivery Returns.{" "}
+                <span className="underline underline-offset-2">Details</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
