@@ -67,6 +67,10 @@ const Shop = ({ categories, brands }: Props) => {
               setSelectedBrand={setSelectedBrand}
             />
             {/*PriceList */}
+            <PriceList
+              selectedPrice={selectedPrice}
+              setSelectedPrice={setSelectedPrice}
+            />
           </div>
           <div>Products</div>
         </div>
