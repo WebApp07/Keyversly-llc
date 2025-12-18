@@ -7,7 +7,11 @@ import CategoryList from "./shop/CategoryList";
 import BrandList from "./shop/BrandList";
 import PriceList from "./shop/PriceList";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { client } from "@/sanity/lib/client";
+import NoProductAvailable from "./NoProductAvailable";
+import ProductCard from "./ProductCard";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   categories: Category[]; //will receive a list of categories
@@ -15,30 +19,54 @@ interface Props {
 }
 
 const Shop = ({ categories, brands }: Props) => {
-  //console.log(brands, categories);
-  const searchParams = useSearchParams(); //helper that lets you look at the URL of the website.
-  // Get the "brand"  values from the URL
+  const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
-  // Get the "category" values from the URL
   const categoryParams = searchParams?.get("category");
-
-  // Create a state to store the list of products (initially empty array)
   const [products, setProducts] = useState<Product[]>([]);
-
-  // Create a state to track if the data is loading (default is 'false' because it's not loading yet)
   const [loading, setLoading] = useState(false);
-
-  // Create a state to store the selected category (either from the URL or 'null' if none selected)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
-    categoryParams || null // If categoryParams has a value (from URL), use it, else set 'null'
+    categoryParams || null
   );
   const [selectedBrand, setSelectedBrand] = useState<string | null>(
-    brandParams || null // If brandParams has a value (from URL), use it, else set 'null'
+    brandParams || null
   );
-
-  // Create a state to store the selected price filter (default is 'null' meaning no filter)
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      let minPrice = 0;
+      let maxPrice = 10000;
+      if (selectedPrice) {
+        const [min, max] = selectedPrice.split("-").map(Number);
+        minPrice = min;
+        maxPrice = max;
+      }
+      const query = `
+      *[_type == 'product' 
+        && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
+        && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
+        && price >= $minPrice && price <= $maxPrice
+      ] 
+      | order(name asc) {
+        ...,"categories": categories[]->title
+      }
+    `;
+      const data = await client.fetch(
+        query,
+        { selectedCategory, selectedBrand, minPrice, maxPrice },
+        { next: { revalidate: 0 } }
+      );
+      setProducts(data);
+    } catch (error) {
+      console.log("Shop product fetching Error", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory, selectedBrand, selectedPrice]);
   return (
     <div className="border-t">
       <Container className="mt-5">
@@ -47,32 +75,59 @@ const Shop = ({ categories, brands }: Props) => {
             <Title className="text-lg uppercase tracking-wide">
               Get the products as your needs
             </Title>
-            <button className="text-shop_dark_green underline text-sm mt-2 font-medium hover:text-shop_orange hoverEffect">
-              Reset Filters
-            </button>
+            {(selectedCategory !== null ||
+              selectedBrand !== null ||
+              selectedPrice !== null) && (
+              <button
+                onClick={() => {
+                  setSelectedCategory(null);
+                  setSelectedBrand(null);
+                  setSelectedPrice(null);
+                }}
+                className="text-shop_dark_green underline text-sm mt-2 font-medium hover:text-darkRed hoverEffect"
+              >
+                Reset Filters
+              </button>
+            )}
           </div>
         </div>
         <div className="flex flex-col md:flex-row gap-5 border-t border-t-shop_dark_green/50">
           <div className="md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 md:border-r border-r-shop_btn_dark_green/50 scrollbar-hide">
-            {/*CategoryList */}
             <CategoryList
               categories={categories}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />
-            {/*BrandList */}
             <BrandList
               brands={brands}
-              selectedBrand={selectedBrand}
               setSelectedBrand={setSelectedBrand}
+              selectedBrand={selectedBrand}
             />
-            {/*PriceList */}
             <PriceList
-              selectedPrice={selectedPrice}
               setSelectedPrice={setSelectedPrice}
+              selectedPrice={selectedPrice}
             />
           </div>
-          <div>Products</div>
+          <div className="flex-1 pt-5">
+            <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
+              {loading ? (
+                <div className="p-20 flex flex-col gap-2 items-center justify-center bg-white">
+                  <Loader2 className="w-10 h-10 text-shop_dark_green animate-spin" />
+                  <p className="font-semibold tracking-wide text-base">
+                    Product is loading . . .
+                  </p>
+                </div>
+              ) : products?.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                  {products?.map((product) => (
+                    <ProductCard key={product?._id} product={product} />
+                  ))}
+                </div>
+              ) : (
+                <NoProductAvailable className="bg-white mt-0" />
+              )}
+            </div>
+          </div>
         </div>
       </Container>
     </div>
