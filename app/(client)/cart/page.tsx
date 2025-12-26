@@ -3,9 +3,11 @@
 import Container from "@/components/Container";
 import EmptyCart from "@/components/EmptyCart";
 import NoAccess from "@/components/NoAccess";
+import Title from "@/components/Title";
 import { Address } from "@/sanity.types";
 import useStore from "@/store";
 import { useAuth, useUser } from "@clerk/nextjs";
+import { ShoppingBag } from "lucide-react";
 import { useState } from "react";
 
 const CartPage = () => {
@@ -29,7 +31,16 @@ const CartPage = () => {
   return <div className='bg-gray-50 pb-52 md:pb-10'>
    {isSignedIn ? <Container>
     {
-      groupedItems?.length ? <p>Products</p> : <EmptyCart />
+      groupedItems?.length ? <>
+        <div className="flex item-center gap-2 py-2">
+          <ShoppingBag className="text-darkColor" />
+         <Title className="">Shopping Cart</Title>
+        </div>
+        <div className="grid lg:grid-cols-3 md:gap-8">
+        <div className="lg:col-span-2 rounded-lg">Products</div>
+        <div>Summary</div>
+        </div>
+      </> : <EmptyCart />
     }
    </Container> : <NoAccess />}
   </div>;
