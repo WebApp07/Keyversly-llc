@@ -1,6 +1,7 @@
 "use client"
 
 import Container from "@/components/Container";
+import EmptyCart from "@/components/EmptyCart";
 import NoAccess from "@/components/NoAccess";
 import { Address } from "@/sanity.types";
 import useStore from "@/store";
@@ -26,7 +27,11 @@ const CartPage = () => {
         null
       );
   return <div className='bg-gray-50 pb-52 md:pb-10'>
-   {isSignedIn ? <Container>CartPage</Container> : <NoAccess />}
+   {isSignedIn ? <Container>
+    {
+      groupedItems?.length ? <p>Products</p> : <EmptyCart />
+    }
+   </Container> : <NoAccess />}
   </div>;
 };
 
