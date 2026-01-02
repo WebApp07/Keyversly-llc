@@ -65,66 +65,46 @@ const CartPage = () => {
   useEffect(() => {
     fetchAddresses();
   }, []);
-  const handleResetCart = () => {
-    toast(
-      (t) => (
-        <div className="w-full">
-          <p className="text-sm font-semibold text-gray-900">Reset cart?</p>
-          <p className="mt-1 text-xs text-gray-600">
-            All items will be removed permanently.
-          </p>
+const handleResetCart = () => {
+  toast(
+    (t) => (
+      <div className="w-full">
+        <p className="text-sm font-semibold text-gray-900">Reset cart?</p>
+        <p className="mt-1 text-xs text-gray-600">
+          All items will be removed permanently.
+        </p>
 
-          <div className="mt-4 flex justify-end gap-3">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
-            >
-              Cancel
-            </button>
+        <div className="mt-4 flex justify-end gap-3">
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
+          >
+            Cancel
+          </button>
 
-            <button
-              onClick={() => {
-                resetCart();
-                toast.dismiss(t.id);
-                toast.success("Cart reset successfully");
-              }}
-              className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
-            >
-              Reset
-            </button>
-          </div>
+          <button
+            onClick={() => {
+              resetCart();
+              toast.dismiss(t.id);
+              toast.success("Cart reset successfully");
+            }}
+            className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+          >
+            Reset
+          </button>
         </div>
-      ),
-      {
-        duration: 10000,
-        style: {
-          background: "#ffffff",
-          border: "1px solid #e5e7eb",
-        },
-      }
-    );
-  };
-
-  const handleCheckout = async () => {
-    setLoading(true);
-    try {
-      const metadata: Metadata = {
-        orderNumber: crypto.randomUUID(),
-        customerName: user?.fullName ?? "Unknown",
-        customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
-        clerkUserId: user?.id,
-        address: selectedAddress,
-      };
-      const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
-      }
-    } catch (error) {
-      console.error("Error creating checkout session:", error);
-    } finally {
-      setLoading(false);
+      </div>
+    ),
+    {
+      duration: 10000,
+      style: {
+        background: "#ffffff",
+        border: "1px solid #e5e7eb",
+      },
     }
-  };
+  );
+};
+ 
   return (
     <div className="bg-gray-50 pb-52 md:pb-10">
       {isSignedIn ? (
@@ -261,7 +241,7 @@ const CartPage = () => {
                           className="w-full rounded-full font-semibold tracking-wide hoverEffect"
                           size="lg"
                           disabled={loading}
-                          onClick={handleCheckout}
+                         
                         >
                           {loading ? "Please wait..." : "Proceed to Checkout"}
                         </Button>
