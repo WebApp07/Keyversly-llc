@@ -1,16 +1,19 @@
 import { sanityFetch } from "../lib/live";
 import {
+  BLOG_CATEGORIES,
   BRAND_QUERY,
   BRANDS_QUERY,
   DEAL_PRODUCTS,
+  GET_ALL_BLOG,
   LATEST_BLOG_QUERY,
+  MY_ORDERS_QUERY,
+  OTHERS_BLOG_QUERY,
   PRODUCT_BY_SLUG_QUERY,
+  SINGLE_BLOG_QUERY,
 } from "./query";
 
 const getCategories = async (quantity?: number) => {
   try {
-    // If "quantity" is provided, we limit the number of categories returned.
-    // Otherwise, we fetch ALL categories.
     const query = quantity
       ? `*[_type == 'category'] | order(name asc) [0...$quantity] {
           ...,
@@ -20,18 +23,10 @@ const getCategories = async (quantity?: number) => {
           ...,
           "productCount": count(*[_type == "product" && references(^._id)])
         }`;
-
-    // Fetch categories from Sanity with optional limit (quantity)
     const { data } = await sanityFetch({
-      // The GROQ query we built earlier (string)
       query,
-      // Query parameters passed to Sanity.
-      // If "quantity" is provided, we send { quantity: 5 }, for example.
-      // If not provided, we send an empty object {}.
-      // This prevents errors in GROQ when no parameters are needed.
       params: quantity ? { quantity } : {},
     });
-    // We only need the 'data' part, so we return it.
     return data;
   } catch (error) {
     console.log("Error fetching categories", error);
@@ -39,52 +34,25 @@ const getCategories = async (quantity?: number) => {
   }
 };
 
-// Function to fetch all brand documents from Sanity
 const getAllBrands = async () => {
   try {
-    // Call your custom Sanity fetch function.
-    // It sends the BRANDS_QUERY to Sanity and returns an object like: { data: [...] }
-    const { data } = await sanityFetch({
-      query: BRANDS_QUERY, // GROQ query that fetches all brands sorted by name
-    });
-
-    // Return the data if it exists, otherwise return an empty array to avoid undefined errors.
+    const { data } = await sanityFetch({ query: BRANDS_QUERY });
     return data ?? [];
   } catch (error) {
-    // If anything goes wrong (network error, invalid query, etc.)
-    // log the error so you can debug it.
     console.log("Error fetching all brands:", error);
-
-    // Optional: return an empty array when an error happens,
-    // so the UI doesn't break.
     return [];
   }
 };
 
-// Function to fetch all Latest Blogs from Sanity
 const getLatestBlogs = async () => {
   try {
-    // Call your custom Sanity fetch function.
-    // It sends the BRANDS_QUERY to Sanity and returns an object like: { data: [...] }
-    const { data } = await sanityFetch({
-      query: LATEST_BLOG_QUERY, // GROQ query that fetches all Blogs
-    });
-
-    // Return the data if it exists, otherwise return an empty array to avoid undefined errors.
+    const { data } = await sanityFetch({ query: LATEST_BLOG_QUERY });
     return data ?? [];
   } catch (error) {
-    // If anything goes wrong (network error, invalid query, etc.)
-    // log the error so you can debug it.
     console.log("Error fetching latest Blogs:", error);
-
-    // Optional: return an empty array when an error happens,
-    // so the UI doesn't break.
     return [];
   }
 };
-
-// function safely asks Sanity for hot deal products and always returns an array, even if something breaks.
-
 const getDealProducts = async () => {
   try {
     const { data } = await sanityFetch({ query: DEAL_PRODUCTS });
@@ -94,24 +62,18 @@ const getDealProducts = async () => {
     return [];
   }
 };
-
-// Function to fetch a single product from Sanity by its slug
 const getProductBySlug = async (slug: string) => {
   try {
-    // Call the sanityFetch function with the query and dynamic slug
-    // sanityFetch returns a Promise, so we use await to get the actual data
     const product = await sanityFetch({
-      query: PRODUCT_BY_SLUG_QUERY, // The GROQ query defined to fetch product by slug
+      query: PRODUCT_BY_SLUG_QUERY,
       params: {
-        slug, // Pass the slug to the query ($slug)
+        slug,
       },
     });
-
-    // Return the product data if it exists, otherwise return null
     return product?.data || null;
   } catch (error) {
-    // Catch any errors during fetching and log them
-    console.error("Error fetching data by ID", error);
+    console.error("Error fetching product by ID:", error);
+    return null;
   }
 };
 const getBrand = async (slug: string) => {
@@ -128,7 +90,67 @@ const getBrand = async (slug: string) => {
     return null;
   }
 };
+const getMyOrders = async (userId: string) => {
+  try {
+    const orders = await sanityFetch({
+      query: MY_ORDERS_QUERY,
+      params: { userId },
+    });
+    return orders?.data || null;
+  } catch (error) {
+    console.error("Error fetching product by ID:", error);
+    return null;
+  }
+};
+const getAllBlogs = async (quantity: number) => {
+  try {
+    const { data } = await sanityFetch({
+      query: GET_ALL_BLOG,
+      params: { quantity },
+    });
+    return data ?? [];
+  } catch (error) {
+    console.log("Error fetching all brands:", error);
+    return [];
+  }
+};
 
+const getSingleBlog = async (slug: string) => {
+  try {
+    const { data } = await sanityFetch({
+      query: SINGLE_BLOG_QUERY,
+      params: { slug },
+    });
+    return data ?? [];
+  } catch (error) {
+    console.log("Error fetching all brands:", error);
+    return [];
+  }
+};
+const getBlogCategories = async () => {
+  try {
+    const { data } = await sanityFetch({
+      query: BLOG_CATEGORIES,
+    });
+    return data ?? [];
+  } catch (error) {
+    console.log("Error fetching all brands:", error);
+    return [];
+  }
+};
+
+const getOthersBlog = async (slug: string, quantity: number) => {
+  try {
+    const { data } = await sanityFetch({
+      query: OTHERS_BLOG_QUERY,
+      params: { slug, quantity },
+    });
+    return data ?? [];
+  } catch (error) {
+    console.log("Error fetching all brands:", error);
+    return [];
+  }
+};
 export {
   getCategories,
   getAllBrands,
@@ -136,4 +158,9 @@ export {
   getDealProducts,
   getProductBySlug,
   getBrand,
+  getMyOrders,
+  getAllBlogs,
+  getSingleBlog,
+  getBlogCategories,
+  getOthersBlog,
 };
