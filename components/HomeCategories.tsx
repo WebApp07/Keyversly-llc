@@ -43,9 +43,11 @@ const HomeCategories = ({ categories }: { categories: Category[] }) => {
 
               <p className="text-sm">
                 {/* Show product count coming from GROQ query */}
-                <span className="font-bold text-shop_dark_green">
-                  {`(${category?.productCount})`}
-                </span>{" "}
+                {category?.productCount && (
+                  <span className="font-bold text-shop_dark_green">
+                    {`(${category?.productCount})`}
+                  </span>
+                )}{" "}
                 items Available
               </p>
             </div>
