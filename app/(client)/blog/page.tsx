@@ -30,7 +30,7 @@ const BlogPage = async () => {
               <div className="bg-gray-100 p-5">
                 <div className="text-xs flex items-center gap-5">
                   <div className="flex items-center relative group cursor-pointer">
-                    {blog?.blogcategories?.map((item, index) => (
+                    {blog?.blogcategories?.map((item: { title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | Iterable<React.ReactNode> | null | undefined; }, index: React.Key | null | undefined) => (
                       <p
                         key={index}
                         className="font-semibold text-shop_dark_green tracking-wider"
