@@ -12,7 +12,7 @@ const DealPage = async () => {
           Hot Deals of the Week
         </Title>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
-          {products?.map((product) => (
+          {products?.map((product:any) => (
             <ProductCard key={product?._id} product={product} />
           ))}
         </div>
