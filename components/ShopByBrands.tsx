@@ -52,7 +52,7 @@ const ShopByBrands = async () => {
 
       {/* Grid layout showing brand cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2.5">
-        {brands?.map((brand) => (
+        {brands?.map((brand: typeof brands[number]) => (
           // Each brand is wrapped in a <Link> so users can click the brand
           // and navigate to a dedicated brand page, e.g. /brand/autodesk
           <Link
